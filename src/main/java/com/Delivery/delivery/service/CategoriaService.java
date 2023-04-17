@@ -39,6 +39,10 @@ public class CategoriaService {
         return categoriaRepository.findById(id);
     }
 
+    public Optional<Categoria> buscarPorNome(String nome) {
+        return categoriaRepository.findByNome(nome);
+    }
+
     public void deletar(UUID id) {
         Optional<Categoria> categoria = categoriaRepository.findById(id);
         if (categoria.isPresent()) {

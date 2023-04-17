@@ -17,7 +17,7 @@ public class Categoria {
     @Column
     private UUID id;
 
-    @Column(nullable = false, length = 140)
+    @Column(nullable = false, length = 140, unique = true)
     private String nome;
 
     public Categoria() {

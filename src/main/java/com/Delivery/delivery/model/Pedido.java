@@ -1,7 +1,7 @@
 package com.Delivery.delivery.model;
 
 import java.io.Serializable;
-import java.time.LocalDateTime;
+import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
@@ -47,14 +47,14 @@ public class Pedido extends RepresentationModel<Pedido> implements Serializable 
     private String telefone;
 
     @Column(name = "dataCriacao", nullable = false)
-    private LocalDateTime dataCriacao;
+    private Date dataCriacao;
 
     @ManyToOne
     @JoinColumn(name = "ipId", referencedColumnName = "id")
     private IpPerson ipPerson;
 
     public Pedido() {
-        this.dataCriacao = LocalDateTime.now();
+        this.dataCriacao = new Date();
     }
 
     public Pedido(String primeiroNome, String ultimoNome, Integer cpf, String cep, Integer numeroCasa,
@@ -65,7 +65,7 @@ public class Pedido extends RepresentationModel<Pedido> implements Serializable 
         this.cep = cep;
         this.numeroCasa = numeroCasa;
         this.telefone = telefone;
-        this.dataCriacao = LocalDateTime.now();
+        this.dataCriacao = new Date();
         this.ipPerson = ipPerson;
     }
 
@@ -125,11 +125,11 @@ public class Pedido extends RepresentationModel<Pedido> implements Serializable 
         this.telefone = telefone;
     }
 
-    public LocalDateTime getDataCriacao() {
+    public Date getDataCriacao() {
         return this.dataCriacao;
     }
 
-    public void setDataCriacao(LocalDateTime dataCriacao) {
+    public void setDataCriacao(Date dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 

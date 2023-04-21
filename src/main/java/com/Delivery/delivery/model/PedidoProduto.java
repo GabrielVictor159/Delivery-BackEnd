@@ -35,8 +35,7 @@ public class PedidoProduto {
     public PedidoProduto() {
     }
 
-    public PedidoProduto(UUID id, Pedido pedido, Produto produto, int quantidade) {
-        this.id = id;
+    public PedidoProduto(Pedido pedido, Produto produto, int quantidade) {
         this.pedido = pedido;
         this.produto = produto;
         this.quantidade = quantidade;

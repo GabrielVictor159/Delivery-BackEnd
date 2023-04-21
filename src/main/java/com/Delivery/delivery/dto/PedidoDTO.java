@@ -1,18 +1,25 @@
 package com.Delivery.delivery.dto;
 
-public class PedidoDTO {
+import javax.validation.constraints.NotBlank;
 
+public class PedidoDTO {
+    @NotBlank
     private String primeiroNome;
+    @NotBlank
     private String ultimoNome;
+    @NotBlank
     private String cpf;
-    private String cep;
+    @NotBlank
+    private int cep;
+    @NotBlank
     private int numeroCasa;
+    @NotBlank
     private String telefone;
 
     public PedidoDTO() {
     }
 
-    public PedidoDTO(String primeiroNome, String ultimoNome, String cpf, String cep, int numeroCasa,
+    public PedidoDTO(String primeiroNome, String ultimoNome, String cpf, int cep, int numeroCasa,
             String telefone) {
         this.primeiroNome = primeiroNome;
         this.ultimoNome = ultimoNome;
@@ -46,11 +53,11 @@ public class PedidoDTO {
         this.cpf = cpf;
     }
 
-    public String getCep() {
+    public int getCep() {
         return cep;
     }
 
-    public void setCep(String cep) {
+    public void setCep(int cep) {
         this.cep = cep;
     }
 

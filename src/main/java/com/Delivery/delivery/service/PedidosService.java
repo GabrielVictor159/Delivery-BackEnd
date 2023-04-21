@@ -1,5 +1,7 @@
 package com.Delivery.delivery.service;
 
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -55,5 +57,22 @@ public class PedidosService {
             }
         }
 
+    }
+
+    public void deletarPedidoByTimePerDay() {
+        Date dataAtual = new Date();
+        List<Pedido> todosOsPedidos = pedidosRepository.findAll();
+        Calendar calAtual = Calendar.getInstance();
+        Calendar calComparacao = Calendar.getInstance();
+        calAtual.setTime(dataAtual);
+        for (Pedido pedido : todosOsPedidos) {
+            calComparacao.setTime(pedido.getDataCriacao());
+            long diferencaEmMilissegundos = calAtual.getTimeInMillis() -
+                    calComparacao.getTimeInMillis();
+            long diferencaEmDias = diferencaEmMilissegundos / (24 * 60 * 60 * 1000);
+            if (diferencaEmDias > 1) {
+                deletar(pedido.getId());
+            }
+        }
     }
 }

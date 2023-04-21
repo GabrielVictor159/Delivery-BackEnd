@@ -19,5 +19,8 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
 
     Page<Produto> findAllByNomeContainingIgnoreCase(String nome, Pageable pageable);
 
+    List<Produto> findAllByIdIn(List<UUID> ids);
+
     void deleteAllByCategoria(Categoria categoria);
+
 }

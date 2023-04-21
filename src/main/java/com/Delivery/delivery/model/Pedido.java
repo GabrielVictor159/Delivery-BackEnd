@@ -1,8 +1,11 @@
 package com.Delivery.delivery.model;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
+
+import org.springframework.hateoas.RepresentationModel;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -10,59 +13,60 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "pedidos")
-public class Pedido {
-
+public class Pedido extends RepresentationModel<Pedido> implements Serializable {
+    private static final long serialVersionUID = 1l;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column
     private UUID id;
 
-    @Column(name = "primeiroNome", nullable = false, length = 30)
+    @Column(name = "primeiroNome", length = 30, nullable = false)
     private String primeiroNome;
 
-    @Column(name = "ultimoNome", nullable = false, length = 30)
+    @Column(name = "ultimoNome", length = 30, nullable = false)
     private String ultimoNome;
 
-    @Column(nullable = false, length = 80)
-    private String cpf;
+    @Column(name = "cpf", nullable = false)
+    private Integer cpf;
 
-    @Column(nullable = false, length = 80)
+    @Column(name = "cep", length = 80, nullable = false)
     private String cep;
 
-    @Column(nullable = false)
-    private int numeroCasa;
+    @Column(name = "numeroCasa", nullable = false)
+    private Integer numeroCasa;
 
-    @Column(nullable = false, length = 80)
+    @Column(name = "telefone", length = 80, nullable = false)
     private String telefone;
 
-    @Column(nullable = false)
-    private double valor;
-
-    @Column(nullable = false)
+    @Column(name = "dataCriacao", nullable = false)
     private LocalDateTime dataCriacao;
+
+    @ManyToOne
+    @JoinColumn(name = "ipId", referencedColumnName = "id")
+    private IpPerson ipPerson;
 
     public Pedido() {
         this.dataCriacao = LocalDateTime.now();
     }
 
-    public Pedido(UUID id, String primeiroNome, String ultimoNome, String cpf, String cep, int numeroCasa,
-            String telefone, double valor) {
-        this.id = id;
+    public Pedido(String primeiroNome, String ultimoNome, Integer cpf, String cep, Integer numeroCasa,
+            String telefone, IpPerson ipPerson) {
         this.primeiroNome = primeiroNome;
         this.ultimoNome = ultimoNome;
         this.cpf = cpf;
         this.cep = cep;
         this.numeroCasa = numeroCasa;
         this.telefone = telefone;
-        this.valor = valor;
         this.dataCriacao = LocalDateTime.now();
-
+        this.ipPerson = ipPerson;
     }
 
     public UUID getId() {
@@ -89,11 +93,11 @@ public class Pedido {
         this.ultimoNome = ultimoNome;
     }
 
-    public String getCpf() {
+    public Integer getCpf() {
         return this.cpf;
     }
 
-    public void setCpf(String cpf) {
+    public void setCpf(Integer cpf) {
         this.cpf = cpf;
     }
 
@@ -105,11 +109,11 @@ public class Pedido {
         this.cep = cep;
     }
 
-    public int getNumeroCasa() {
+    public Integer getNumeroCasa() {
         return this.numeroCasa;
     }
 
-    public void setNumeroCasa(int numeroCasa) {
+    public void setNumeroCasa(Integer numeroCasa) {
         this.numeroCasa = numeroCasa;
     }
 
@@ -121,21 +125,20 @@ public class Pedido {
         this.telefone = telefone;
     }
 
-    public double getValor() {
-        return this.valor;
-    }
-
-    public void setValor(double valor) {
-        this.valor = valor;
-    }
-
     public LocalDateTime getDataCriacao() {
         return this.dataCriacao;
     }
 
-    @PrePersist
-    public void setDataCriacao() {
-        this.dataCriacao = LocalDateTime.now();
+    public void setDataCriacao(LocalDateTime dataCriacao) {
+        this.dataCriacao = dataCriacao;
+    }
+
+    public IpPerson getIpPerson() {
+        return this.ipPerson;
+    }
+
+    public void setIpPerson(IpPerson ipPerson) {
+        this.ipPerson = ipPerson;
     }
 
     @Override
@@ -148,8 +151,8 @@ public class Pedido {
                 ", cep='" + getCep() + "'" +
                 ", numeroCasa='" + getNumeroCasa() + "'" +
                 ", telefone='" + getTelefone() + "'" +
-                ", valor='" + getValor() + "'" +
                 ", dataCriacao='" + getDataCriacao() + "'" +
+                ", ipPerson='" + getIpPerson() + "'" +
                 "}";
     }
 

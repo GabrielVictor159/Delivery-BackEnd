@@ -8,20 +8,18 @@ public class PedidoDTO {
     private String cep;
     private int numeroCasa;
     private String telefone;
-    private double valor;
 
     public PedidoDTO() {
     }
 
     public PedidoDTO(String primeiroNome, String ultimoNome, String cpf, String cep, int numeroCasa,
-            String telefone, double valor) {
+            String telefone) {
         this.primeiroNome = primeiroNome;
         this.ultimoNome = ultimoNome;
         this.cpf = cpf;
         this.cep = cep;
         this.numeroCasa = numeroCasa;
         this.telefone = telefone;
-        this.valor = valor;
     }
 
     public String getPrimeiroNome() {
@@ -70,14 +68,6 @@ public class PedidoDTO {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
-    }
-
-    public double getValor() {
-        return valor;
-    }
-
-    public void setValor(double valor) {
-        this.valor = valor;
     }
 
 }

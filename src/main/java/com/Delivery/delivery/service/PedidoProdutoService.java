@@ -22,6 +22,10 @@ public class PedidoProdutoService {
         return pedidoProdutoRepository.save(pedidoProduto);
     }
 
+    public List<PedidoProduto> salvarTodos(List<PedidoProduto> list) {
+        return pedidoProdutoRepository.saveAll(list);
+    }
+
     public List<PedidoProduto> buscarTodos() {
         return pedidoProdutoRepository.findAll();
     }

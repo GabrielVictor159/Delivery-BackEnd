@@ -46,6 +46,10 @@ public class ProdutoService {
         return produtoRepository.findAllByCategoria(categoria, pageable);
     }
 
+    public List<Produto> buscarProdutosPorIds(List<UUID> ids) {
+        return produtoRepository.findAllByIdIn(ids);
+    }
+
     public Optional<Produto> buscarPorId(UUID id) {
         return produtoRepository.findById(id);
     }

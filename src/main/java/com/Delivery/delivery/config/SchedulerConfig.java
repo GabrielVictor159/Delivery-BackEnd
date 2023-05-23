@@ -30,7 +30,10 @@ public class SchedulerConfig implements SchedulingConfigurer {
 
     @Override
     public void configureTasks(ScheduledTaskRegistrar taskRegistrar) {
-        throw new UnsupportedOperationException("Unimplemented method 'configureTasks'");
+        // TODO Auto-generated method stub
+        
     }
+
+   
 
 }

@@ -1,5 +1,6 @@
 package com.Delivery.delivery.controller;
 
+import java.util.Arrays;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -26,6 +27,7 @@ import com.Delivery.delivery.model.Categoria;
 import com.Delivery.delivery.model.Produto;
 import com.Delivery.delivery.service.AdminService;
 import com.Delivery.delivery.service.CategoriaService;
+import com.Delivery.delivery.service.ImageService;
 import com.Delivery.delivery.service.ProdutoService;
 
 @RestController
@@ -38,6 +40,8 @@ public class ProdutoController {
     CategoriaService categoriaService;
     @Autowired
     AdminService adminService;
+    @Autowired
+    ImageService imageService;
 
     @GetMapping()
     public ResponseEntity<Object> buscarProdutosPaginados(@RequestParam(required = false) String nome,
@@ -82,6 +86,8 @@ public class ProdutoController {
             try {
                 Produto produto = new Produto();
                 BeanUtils.copyProperties(dto, produto);
+                String[] imagens = adicionarImagens(dto.getImagens());
+                produto.setImagens(Arrays.toString(imagens));
                 produtoService.salvar(produto);
                 return new ResponseEntity<>(produto, HttpStatus.OK);
             } catch (Exception e) {
@@ -99,16 +105,18 @@ public class ProdutoController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
             try {
-                Optional<Produto> produto = produtoService.buscarPorId(id);
-                if (produto.isEmpty()) {
-                    dto.setImagens(produto.get().getImagens());
+                Optional<Produto> produtoOptional = produtoService.buscarPorId(id);
+                if (produtoOptional.isPresent()) {
+                    Produto produto = produtoOptional.get();
+                    excluirImagens(produto.getImagens());
+                    String[] imagens = adicionarImagens(dto.getImagens());
+                    produto.setImagens(Arrays.toString(imagens));
                     BeanUtils.copyProperties(dto, produto);
-                    produtoService.salvar(produto.get());
+                    produtoService.salvar(produto);
                     return new ResponseEntity<>(produto, HttpStatus.OK);
                 } else {
                     return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
                 }
-
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 return new ResponseEntity<>("Houve um erro", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -117,20 +125,54 @@ public class ProdutoController {
     }
 
     @DeleteMapping("/{id}/{nomeAdmin}/{senhaAdmin}")
-    public ResponseEntity<Object> atualizar(@PathVariable UUID id, @PathVariable String nomeAdmin,
+    public ResponseEntity<Object> Deletar(@PathVariable UUID id, @PathVariable String nomeAdmin,
             @PathVariable String senhaAdmin) {
         Optional<Admin> admin = adminService.login(nomeAdmin, senhaAdmin);
         if (admin.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
-            try {
-                produtoService.deletar(id);
-                return new ResponseEntity<>(HttpStatus.OK);
-
-            } catch (Exception e) {
-                System.out.println(e.getMessage());
-                return new ResponseEntity<>("Houve um erro", HttpStatus.INTERNAL_SERVER_ERROR);
+            Optional<Produto> produtoOptional = produtoService.buscarPorId(id);
+            if (produtoOptional.isPresent()) {
+                try {
+                    excluirImagens(produtoOptional.get().getImagens());
+                    produtoService.deletar(id);
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+                    return new ResponseEntity<>("Houve um erro", HttpStatus.INTERNAL_SERVER_ERROR);
+                }
+            } else {
+                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
             }
         }
+    }
+
+    private void excluirImagens(String imagens) {
+        if (imagens != null && !imagens.isEmpty()) {
+            String[] imagensArray = imagens.split(", ");
+            for (String imagePath : imagensArray) {
+                try {
+                    imageService.excluir(imagePath.trim());
+                } catch (Exception e) {
+                    System.out.println("Erro ao excluir a imagem: " + imagePath);
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private String[] adicionarImagens(byte[][] imagensDto) {
+        String[] imagens = new String[imagensDto.length];
+        for (int i = 0; i < imagensDto.length; i++) {
+            byte[] image = imagensDto[i];
+            try {
+                String imagePath = imageService.salvar(image);
+                imagens[i] = imagePath;
+            } catch (Exception e) {
+                System.out.println("Erro ao adicionar a imagem");
+                e.printStackTrace();
+            }
+        }
+        return imagens;
     }
 }

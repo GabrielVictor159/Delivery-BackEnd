@@ -30,7 +30,7 @@ public class Produto {
     @Column(nullable = false)
     private double preco;
 
-    @Column
+    @Column(columnDefinition = "TEXT")
     private String imagens;
 
     @ManyToOne(fetch = FetchType.LAZY)

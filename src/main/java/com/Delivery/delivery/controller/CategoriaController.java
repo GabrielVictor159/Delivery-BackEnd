@@ -24,6 +24,7 @@ import com.Delivery.delivery.model.Admin;
 import com.Delivery.delivery.model.Categoria;
 import com.Delivery.delivery.service.AdminService;
 import com.Delivery.delivery.service.CategoriaService;
+import com.Delivery.delivery.service.ImageService;
 
 @RestController
 @RequestMapping(value = "/Categorias", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -34,6 +35,8 @@ public class CategoriaController {
     AdminService adminService;
     @Autowired
     CategoriaService categoriaService;
+    @Autowired
+    ImageService imageService;
 
     @GetMapping()
     public ResponseEntity<Object> getAll() {
@@ -61,7 +64,9 @@ public class CategoriaController {
         } else {
             try {
                 Categoria categoria = new Categoria();
+                String image = imageService.salvar(dto.getImagem());
                 BeanUtils.copyProperties(dto, categoria);
+                categoria.setImagem(image);
                 categoriaService.salvar(categoria);
                 return new ResponseEntity<>(categoria, HttpStatus.OK);
             } catch (Exception e) {
@@ -83,9 +88,18 @@ public class CategoriaController {
             if (categoria.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                BeanUtils.copyProperties(dto, categoria.get());
-                categoriaService.salvar(categoria.get());
-                return new ResponseEntity<>(categoria.get(), HttpStatus.OK);
+                try {
+                    imageService.excluir(categoria.get().getImagem());
+                    BeanUtils.copyProperties(dto, categoria.get());
+                    String image = imageService.salvar(dto.getImagem());
+                    categoria.get().setImagem(image);
+                    categoriaService.salvar(categoria.get());
+                    return new ResponseEntity<>(categoria.get(), HttpStatus.OK);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             }
         }
     }
@@ -101,8 +115,15 @@ public class CategoriaController {
             if (categoria.isEmpty()) {
                 return new ResponseEntity<>(HttpStatus.NOT_FOUND);
             } else {
-                categoriaService.deletar(categoria.get().getId());
-                return new ResponseEntity<>(HttpStatus.OK);
+                try {
+                    imageService.excluir(categoria.get().getImagem());
+                    categoriaService.deletar(categoria.get().getId());
+                    return new ResponseEntity<>(HttpStatus.OK);
+                } catch (Exception e) {
+                    System.out.println(e.getMessage());
+
+                    return new ResponseEntity<>(HttpStatus.INTERNAL_SERVER_ERROR);
+                }
             }
 
         }

@@ -20,16 +20,20 @@ public class Categoria {
     @Column(nullable = false, length = 140, unique = true)
     private String nome;
 
+    @Column(columnDefinition = "TEXT")
+    private String imagem;
+
     public Categoria() {
     }
 
-    public Categoria(UUID id, String nome) {
+    public Categoria(UUID id, String nome, String imagem) {
         this.id = id;
         this.nome = nome;
+        this.imagem = imagem;
     }
 
     public UUID getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(UUID id) {
@@ -37,19 +41,24 @@ public class Categoria {
     }
 
     public String getNome() {
-        return this.nome;
+        return nome;
     }
 
     public void setNome(String nome) {
         this.nome = nome;
     }
 
+    public String getImagem() {
+        return imagem;
+    }
+
+    public void setImagem(String imagem) {
+        this.imagem = imagem;
+    }
+
     @Override
     public String toString() {
-        return "{" +
-                " id='" + getId() + "'" +
-                ", nome='" + getNome() + "'" +
-                "}";
+        return "Categoria [id=" + id + ", nome=" + nome + ", imagem=" + imagem + "]";
     }
 
 }

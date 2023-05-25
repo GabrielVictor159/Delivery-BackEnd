@@ -23,4 +23,18 @@ public interface ProdutoRepository extends JpaRepository<Produto, UUID> {
 
     void deleteAllByCategoria(Categoria categoria);
 
+    Page<Produto> findAllByNomeContainingIgnoreCaseAndPrecoBetweenAndDescricaoContainingIgnoreCase(
+            String nome, double precoMinimo, double precoMaximo, String descricao, Pageable pageable);
+
+    Page<Produto> findAllByCategoria_NomeAndPrecoBetweenAndDescricaoContainingIgnoreCase(
+            String categoria, double precoMinimo, double precoMaximo, String descricao, Pageable pageable);
+
+    Page<Produto> findAllByNomeContainingIgnoreCaseAndCategoria_NomeAndPrecoBetweenAndDescricaoContainingIgnoreCase(
+            String nome, String categoria, double precoMinimo, double precoMaximo, String descricao, Pageable pageable);
+
+    Page<Produto> findAllByPrecoBetweenAndDescricaoContainingIgnoreCase(
+            double precoMinimo, double precoMaximo, String descricao, Pageable pageable);
+
+    Page<Produto> findAllByPrecoBetween(double precoMinimo, double precoMaximo, Pageable pageable);
+
 }

@@ -1,6 +1,10 @@
 package com.Delivery.delivery.model;
 
+import java.io.Serializable;
 import java.util.UUID;
+
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,7 +18,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "produto")
-public class Produto {
+public class Produto implements Serializable {
+    private static final long serialVersionUID = 1l;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -33,23 +38,25 @@ public class Produto {
     @Column(columnDefinition = "TEXT")
     private String imagens;
 
+    @JsonIgnoreProperties({ "hibernateLazyInitializer" })
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn
+    @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
 
     public Produto() {
     }
 
-    public Produto(UUID id, String nome, String descricao, double preco, String imagens) {
+    public Produto(UUID id, String nome, String descricao, double preco, String imagens, Categoria categoria) {
         this.id = id;
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
         this.imagens = imagens;
+        this.categoria = categoria;
     }
 
     public UUID getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(UUID id) {
@@ -57,7 +64,7 @@ public class Produto {
     }
 
     public String getNome() {
-        return this.nome;
+        return nome;
     }
 
     public void setNome(String nome) {
@@ -65,7 +72,7 @@ public class Produto {
     }
 
     public String getDescricao() {
-        return this.descricao;
+        return descricao;
     }
 
     public void setDescricao(String descricao) {
@@ -73,7 +80,7 @@ public class Produto {
     }
 
     public double getPreco() {
-        return this.preco;
+        return preco;
     }
 
     public void setPreco(double preco) {
@@ -81,22 +88,25 @@ public class Produto {
     }
 
     public String getImagens() {
-        return this.imagens;
+        return imagens;
     }
 
     public void setImagens(String imagens) {
         this.imagens = imagens;
     }
 
+    public Categoria getCategoria() {
+        return categoria;
+    }
+
+    public void setCategoria(Categoria categoria) {
+        this.categoria = categoria;
+    }
+
     @Override
     public String toString() {
-        return "{" +
-                " id='" + getId() + "'" +
-                ", nome='" + getNome() + "'" +
-                ", descricao='" + getDescricao() + "'" +
-                ", preco='" + getPreco() + "'" +
-                ", imagens='" + getImagens() + "'" +
-                "}";
+        return "Produto [id=" + id + ", nome=" + nome + ", descricao=" + descricao + ", preco=" + preco + ", imagens="
+                + imagens + ", categoria=" + categoria + "]";
     }
 
 }

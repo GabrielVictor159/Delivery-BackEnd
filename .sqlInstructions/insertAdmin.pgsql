@@ -1,0 +1,1 @@
+INSERT INTO admin VALUES ('5747eb45-63b4-434a-92f6-8958ff8191b9', 'Gabriel','2dcbf9e39d332dbf62df3b1524f8d755','DONO');

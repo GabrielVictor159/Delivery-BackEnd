@@ -17,6 +17,8 @@ import com.Delivery.delivery.model.Pedido;
 import com.Delivery.delivery.repository.PedidoProdutoRepository;
 import com.Delivery.delivery.repository.PedidosRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class PedidosService {
     @Autowired
@@ -26,6 +28,7 @@ public class PedidosService {
     @Autowired
     IpPersonService ipPersonService;
 
+    @Transactional
     public Pedido salvar(Pedido pedido) {
         return pedidosRepository.save(pedido);
     }

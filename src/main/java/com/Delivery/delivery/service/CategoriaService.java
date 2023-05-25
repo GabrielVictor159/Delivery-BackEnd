@@ -15,6 +15,8 @@ import com.Delivery.delivery.repository.PedidoProdutoRepository;
 import com.Delivery.delivery.repository.PedidosRepository;
 import com.Delivery.delivery.repository.ProdutoRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class CategoriaService {
 
@@ -27,6 +29,7 @@ public class CategoriaService {
     @Autowired
     PedidosRepository pedidosRepository;
 
+    @Transactional
     public Categoria salvar(Categoria categoria) {
         return categoriaRepository.save(categoria);
     }
@@ -43,6 +46,7 @@ public class CategoriaService {
         return categoriaRepository.findByNome(nome);
     }
 
+    @Transactional
     public void deletar(UUID id) {
         Optional<Categoria> categoria = categoriaRepository.findById(id);
         if (categoria.isPresent()) {
@@ -60,6 +64,7 @@ public class CategoriaService {
                     }
 
                 }
+                categoriaRepository.deleteById(id);
             } catch (Exception e) {
             }
         }

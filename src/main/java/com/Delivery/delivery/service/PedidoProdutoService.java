@@ -13,15 +13,19 @@ import com.Delivery.delivery.model.PedidoProduto;
 import com.Delivery.delivery.model.Produto;
 import com.Delivery.delivery.repository.PedidoProdutoRepository;
 
+import jakarta.transaction.Transactional;
+
 @Service
 public class PedidoProdutoService {
     @Autowired
     PedidoProdutoRepository pedidoProdutoRepository;
 
+    @Transactional
     public PedidoProduto salvar(PedidoProduto pedidoProduto) {
         return pedidoProdutoRepository.save(pedidoProduto);
     }
 
+    @Transactional
     public List<PedidoProduto> salvarTodos(List<PedidoProduto> list) {
         return pedidoProdutoRepository.saveAll(list);
     }

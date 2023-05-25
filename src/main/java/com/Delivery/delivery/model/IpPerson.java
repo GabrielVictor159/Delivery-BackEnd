@@ -1,5 +1,6 @@
 package com.Delivery.delivery.model;
 
+import java.io.Serializable;
 import java.math.BigDecimal;
 import java.util.UUID;
 
@@ -12,44 +13,45 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "ip_Person")
-public class IpPerson {
+public class IpPerson implements Serializable {
+    private static final long serialVersionUID = 1l;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "id", length = 16, nullable = false)
+    @Column
     private UUID id;
 
-    @Column(name = "ipCode", length = 40, nullable = false)
+    @Column(name = "ipCode", length = 40, nullable = true)
     private String ipCode;
 
-    @Column(name = "country", length = 60, nullable = false)
+    @Column(name = "country", length = 60, nullable = true)
     private String country;
 
-    @Column(name = "region", length = 10, nullable = false)
+    @Column(name = "region", length = 10, nullable = true)
     private String region;
 
-    @Column(name = "city", length = 80)
+    @Column(name = "city", length = 80, nullable = true)
     private String city;
 
-    @Column(name = "zip", length = 20)
+    @Column(name = "zip", length = 20, nullable = true)
     private String zip;
 
-    @Column(name = "lat", precision = 10, scale = 6)
+    @Column(name = "lat", precision = 10, scale = 6, nullable = true)
     private BigDecimal lat;
 
-    @Column(name = "lon", precision = 10, scale = 6)
+    @Column(name = "lon", precision = 10, scale = 6, nullable = true)
     private BigDecimal lon;
 
-    @Column(name = "timezone", length = 100)
+    @Column(name = "timezone", length = 100, nullable = true)
     private String timezone;
 
-    @Column(name = "isp", length = 140)
+    @Column(name = "isp", length = 140, nullable = true)
     private String isp;
 
-    @Column(name = "org", length = 244)
+    @Column(name = "org", length = 244, nullable = true)
     private String org;
 
-    @Column(name = "assinature", length = 244)
+    @Column(name = "assinature", length = 244, nullable = true)
     private String assinature;
 
     public IpPerson() {

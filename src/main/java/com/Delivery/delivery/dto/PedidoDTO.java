@@ -1,6 +1,12 @@
 package com.Delivery.delivery.dto;
 
-import javax.validation.constraints.NotBlank;
+import java.util.List;
+
+import com.Delivery.delivery.dto.genericDTOs.listProducts;
+import com.Delivery.delivery.model.Enums.PaymentMethods;
+
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
 
 public class PedidoDTO {
     @NotBlank
@@ -9,24 +15,31 @@ public class PedidoDTO {
     private String ultimoNome;
     @NotBlank
     private String cpf;
-    @NotBlank
-    private int cep;
-    @NotBlank
+    @NotNull
+    private String cep;
+    @NotNull
     private int numeroCasa;
     @NotBlank
     private String telefone;
+    @NotNull
+    private PaymentMethods metodoPagamento;
+
+    private List<listProducts> produtos;
 
     public PedidoDTO() {
     }
 
-    public PedidoDTO(String primeiroNome, String ultimoNome, String cpf, int cep, int numeroCasa,
-            String telefone) {
+    public PedidoDTO(@NotBlank String primeiroNome, @NotBlank String ultimoNome, @NotBlank String cpf,
+            @NotNull String cep, @NotNull int numeroCasa, @NotBlank String telefone,
+            @NotBlank PaymentMethods metodoPagamento, List<listProducts> produtos) {
         this.primeiroNome = primeiroNome;
         this.ultimoNome = ultimoNome;
         this.cpf = cpf;
         this.cep = cep;
         this.numeroCasa = numeroCasa;
         this.telefone = telefone;
+        this.metodoPagamento = metodoPagamento;
+        this.produtos = produtos;
     }
 
     public String getPrimeiroNome() {
@@ -53,11 +66,11 @@ public class PedidoDTO {
         this.cpf = cpf;
     }
 
-    public int getCep() {
+    public String getCep() {
         return cep;
     }
 
-    public void setCep(int cep) {
+    public void setCep(String cep) {
         this.cep = cep;
     }
 
@@ -75,6 +88,29 @@ public class PedidoDTO {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public PaymentMethods getMetodoPagamento() {
+        return metodoPagamento;
+    }
+
+    public void setMetodoPagamento(PaymentMethods metodoPagamento) {
+        this.metodoPagamento = metodoPagamento;
+    }
+
+    public List<listProducts> getProdutos() {
+        return produtos;
+    }
+
+    public void setProdutos(List<listProducts> produtos) {
+        this.produtos = produtos;
+    }
+
+    @Override
+    public String toString() {
+        return "PedidoDTO [primeiroNome=" + primeiroNome + ", ultimoNome=" + ultimoNome + ", cpf=" + cpf + ", cep="
+                + cep + ", numeroCasa=" + numeroCasa + ", telefone=" + telefone + ", metodoPagamento=" + metodoPagamento
+                + ", produtos=" + produtos + "]";
     }
 
 }

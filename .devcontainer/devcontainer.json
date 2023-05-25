@@ -11,7 +11,8 @@
 				"vscjava.vscode-java-pack",
 				"vscjava.vscode-spring-initializr",
 				"ckolkman.vscode-postgres",
-				"tushortz.java-snippets"
+				"tushortz.java-snippets",
+				"rangav.vscode-thunder-client"
 			]
 		}
 	}

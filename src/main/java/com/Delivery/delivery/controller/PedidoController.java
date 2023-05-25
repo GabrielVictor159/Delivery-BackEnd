@@ -6,8 +6,7 @@ import java.util.Optional;
 import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.ExecutionException;
-
-import javax.validation.Valid;
+import java.util.concurrent.Future;
 
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,6 +42,7 @@ import com.Delivery.delivery.service.PedidosService;
 import com.Delivery.delivery.service.ProdutoService;
 
 import jakarta.servlet.http.HttpServletRequest;
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/Pedidos", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -94,53 +94,68 @@ public class PedidoController {
     }
 
     @PostMapping()
-    @Async
-    public ResponseEntity<Object> adicionarPedido(@RequestParam @Valid PedidoDTO pedidoDto,
-            @RequestParam List<listProducts> produtos, HttpServletRequest request) {
+    public ResponseEntity<Object> adicionarPedido(@RequestBody @Valid PedidoDTO pedidoDto, HttpServletRequest request) {
         List<UUID> listIds = new ArrayList<>();
-        for (listProducts a : produtos) {
+        for (listProducts a : pedidoDto.getProdutos()) {
             listIds.add(a.getId());
         }
+        System.out.println(listIds);
         List<Produto> listProdutos = produtoService.buscarProdutosPorIds(listIds);
         if (listProdutos.isEmpty()) {
             return new ResponseEntity<>("Adicione pelo menos um item de produtos", HttpStatus.BAD_REQUEST);
         }
+        System.out.println("Lista produtos = " + listProdutos);
+        System.out.println(pedidoDto.getTelefone());
         if (!ValidationMethods.validarTelefone(pedidoDto.getTelefone())) {
             return new ResponseEntity<>("Telefone invalido", HttpStatus.BAD_REQUEST);
         }
         Double valorTotal = 0.00;
         for (Produto a : listProdutos) {
-            for (listProducts b : produtos) {
-                if (b.getId() == a.getId()) {
+            for (listProducts b : pedidoDto.getProdutos()) {
+                if (b.getId().equals(a.getId())) {
                     valorTotal += a.getPreco() * b.getQuantidade();
                 }
             }
 
         }
+        System.out.println(valorTotal);
         if (!ValidationMethods.isCPF(pedidoDto.getCpf())) {
             return new ResponseEntity<>("CPF invalido", HttpStatus.BAD_REQUEST);
         }
-        CompletableFuture<Boolean> cepValidoFuture = ValidationMethods.isValidCEPAsync(pedidoDto.getCep());
+        CompletableFuture<Boolean> cepValidoFuture = ValidationMethods
+                .isValidCEPAsync(Integer.parseInt(pedidoDto.getCep()));
+        System.out.println(cepValidoFuture);
         try {
             if (!cepValidoFuture.get()) {
                 return new ResponseEntity<>("CEP invalido", HttpStatus.BAD_REQUEST);
             }
             String ip = request.getRemoteAddr();
+            System.out.println(ip);
             try {
-                CompletableFuture<IpPerson> ipPersonVerification = ValidationMethods.getIpPerson(ip);
+                // CompletableFuture<IpPerson> ipPersonVerification =
+                // ValidationMethods.getIpPerson(ip);
+                // System.out.println(ipPersonVerification);
                 try {
-                    IpPerson ipPerson = ipPersonService.save(ipPersonVerification.get());
+                    // IpPerson ipPerson = ipPersonService.save(ipPersonVerification.get());
+                    // System.out.println(ipPerson);
                     Pedido pedido = new Pedido();
                     BeanUtils.copyProperties(pedidoDto, pedido);
                     try {
+                        IpPerson ipPerson = new IpPerson();
+                        ipPersonService.save(ipPerson);
                         pedido.setIpPerson(ipPerson);
+                        pedido.setValorTotal(valorTotal);
+                        pedido.setMetodoPagamento(pedidoDto.getMetodoPagamento().toString());
+                        System.out.println(pedido.toString());
                         Pedido pedidoSalvo = pedidosService.salvar(pedido);
                         try {
                             List<PedidoProduto> listPedidoProduto = new ArrayList<>();
-                            for (listProducts a : produtos) {
+                            for (listProducts a : pedidoDto.getProdutos()) {
                                 for (Produto b : listProdutos) {
-                                    if (a.getId() == b.getId()) {
-                                        PedidoProduto pedidoProduto = new PedidoProduto(pedido, b, a.getQuantidade());
+                                    if (b.getId().equals(a.getId())) {
+                                        System.out.println("passou Aqui");
+                                        PedidoProduto pedidoProduto = new PedidoProduto(pedidoSalvo, b,
+                                                a.getQuantidade());
                                         listPedidoProduto.add(pedidoProduto);
                                     }
                                 }
@@ -150,32 +165,27 @@ public class PedidoController {
                             retorno.setProdutos(retorneProdutos(pedidoSalvo));
                             return new ResponseEntity<>(retorno, HttpStatus.OK);
                         } catch (Exception e) {
-                            System.out.println("\n \n \n Houve um erro: " + e.getMessage() + " \n \n \n");
+                            System.out.println("\n \n \n Houve um erro: " + e + " \n \n \n");
                             pedidosService.deletar(pedidoSalvo.getId());
-                            ipPersonService.deletar(ipPerson.getId());
+                            // ipPersonService.deletar(ipPerson.getId());
                             return new ResponseEntity<>(
                                     "Houve um erro ao tentar salvar a relação entre o seu pedido e os produtos",
                                     HttpStatus.INTERNAL_SERVER_ERROR);
                         }
                     } catch (Exception e) {
-                        System.out.println("\n \n \n Houve um erro: " + e.getMessage() + " \n \n \n");
-                        ipPersonService.deletar(ipPerson.getId());
+                        System.out.println("\n \n \n Houve um erro: " + e + " \n \n \n");
+                        // ipPersonService.deletar(ipPerson.getId());
                         return new ResponseEntity<>(
                                 "Houve um erro ao tentar salvar o seu pedido",
                                 HttpStatus.INTERNAL_SERVER_ERROR);
                     }
 
                 } catch (Exception e) {
-                    System.out.println("\n \n \n Houve um erro: " + e.getMessage() + " \n \n \n");
+                    System.out.println("\n \n \n Houve um erro: " + e + " \n \n \n");
                     return new ResponseEntity<>(
                             "Houve um erro ao tentar salvar os dados de ip, por isso não salvamos o pedido",
                             HttpStatus.INTERNAL_SERVER_ERROR);
                 }
-            } catch (InvalidRegionException e) {
-                System.out.println("\n \n \n Houve um erro: " + e + " \n \n \n");
-                return new ResponseEntity<>(
-                        "O seu Ip não esta registrado no DF portanto verifique se você se encontra no df ou se esta usando um vpn",
-                        HttpStatus.BAD_REQUEST);
             } catch (Exception e) {
                 System.out.println("\n \n \n Houve um erro: " + e + " \n \n \n");
                 return new ResponseEntity<Object>("Houve um erro ao validar o seu ip",

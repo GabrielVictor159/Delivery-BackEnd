@@ -21,7 +21,7 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "pedidos")
-public class Pedido extends RepresentationModel<Pedido> implements Serializable {
+public class Pedido implements Serializable {
     private static final long serialVersionUID = 1l;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
@@ -35,7 +35,7 @@ public class Pedido extends RepresentationModel<Pedido> implements Serializable 
     private String ultimoNome;
 
     @Column(name = "cpf", nullable = false)
-    private Integer cpf;
+    private String cpf;
 
     @Column(name = "cep", length = 80, nullable = false)
     private String cep;
@@ -49,16 +49,23 @@ public class Pedido extends RepresentationModel<Pedido> implements Serializable 
     @Column(name = "dataCriacao", nullable = false)
     private Date dataCriacao;
 
+    @Column(nullable = false)
+    private Double ValorTotal;
+
     @ManyToOne
     @JoinColumn(name = "ipId", referencedColumnName = "id")
     private IpPerson ipPerson;
+
+    @Column(nullable = false)
+    private String metodoPagamento;
 
     public Pedido() {
         this.dataCriacao = new Date();
     }
 
-    public Pedido(String primeiroNome, String ultimoNome, Integer cpf, String cep, Integer numeroCasa,
-            String telefone, IpPerson ipPerson) {
+    public Pedido(UUID id, String primeiroNome, String ultimoNome, String cpf, String cep, Integer numeroCasa,
+            String telefone, Double valorTotal, IpPerson ipPerson, String metodoPayment) {
+        this.id = id;
         this.primeiroNome = primeiroNome;
         this.ultimoNome = ultimoNome;
         this.cpf = cpf;
@@ -66,11 +73,17 @@ public class Pedido extends RepresentationModel<Pedido> implements Serializable 
         this.numeroCasa = numeroCasa;
         this.telefone = telefone;
         this.dataCriacao = new Date();
+        ValorTotal = valorTotal;
         this.ipPerson = ipPerson;
+        this.metodoPagamento = metodoPayment;
+    }
+
+    public static long getSerialversionuid() {
+        return serialVersionUID;
     }
 
     public UUID getId() {
-        return this.id;
+        return id;
     }
 
     public void setId(UUID id) {
@@ -78,7 +91,7 @@ public class Pedido extends RepresentationModel<Pedido> implements Serializable 
     }
 
     public String getPrimeiroNome() {
-        return this.primeiroNome;
+        return primeiroNome;
     }
 
     public void setPrimeiroNome(String primeiroNome) {
@@ -86,23 +99,23 @@ public class Pedido extends RepresentationModel<Pedido> implements Serializable 
     }
 
     public String getUltimoNome() {
-        return this.ultimoNome;
+        return ultimoNome;
     }
 
     public void setUltimoNome(String ultimoNome) {
         this.ultimoNome = ultimoNome;
     }
 
-    public Integer getCpf() {
-        return this.cpf;
+    public String getCpf() {
+        return cpf;
     }
 
-    public void setCpf(Integer cpf) {
+    public void setCpf(String cpf) {
         this.cpf = cpf;
     }
 
     public String getCep() {
-        return this.cep;
+        return cep;
     }
 
     public void setCep(String cep) {
@@ -110,7 +123,7 @@ public class Pedido extends RepresentationModel<Pedido> implements Serializable 
     }
 
     public Integer getNumeroCasa() {
-        return this.numeroCasa;
+        return numeroCasa;
     }
 
     public void setNumeroCasa(Integer numeroCasa) {
@@ -118,7 +131,7 @@ public class Pedido extends RepresentationModel<Pedido> implements Serializable 
     }
 
     public String getTelefone() {
-        return this.telefone;
+        return telefone;
     }
 
     public void setTelefone(String telefone) {
@@ -126,34 +139,43 @@ public class Pedido extends RepresentationModel<Pedido> implements Serializable 
     }
 
     public Date getDataCriacao() {
-        return this.dataCriacao;
+        return dataCriacao;
     }
 
     public void setDataCriacao(Date dataCriacao) {
         this.dataCriacao = dataCriacao;
     }
 
+    public Double getValorTotal() {
+        return ValorTotal;
+    }
+
+    public void setValorTotal(Double valorTotal) {
+        ValorTotal = valorTotal;
+    }
+
     public IpPerson getIpPerson() {
-        return this.ipPerson;
+        return ipPerson;
     }
 
     public void setIpPerson(IpPerson ipPerson) {
         this.ipPerson = ipPerson;
     }
 
+    public String getMetodoPagamento() {
+        return metodoPagamento;
+    }
+
+    public void setMetodoPagamento(String metodoPagamento) {
+        this.metodoPagamento = metodoPagamento;
+    }
+
     @Override
     public String toString() {
-        return "{" +
-                " id='" + getId() + "'" +
-                ", primeiroNome='" + getPrimeiroNome() + "'" +
-                ", ultimoNome='" + getUltimoNome() + "'" +
-                ", cpf='" + getCpf() + "'" +
-                ", cep='" + getCep() + "'" +
-                ", numeroCasa='" + getNumeroCasa() + "'" +
-                ", telefone='" + getTelefone() + "'" +
-                ", dataCriacao='" + getDataCriacao() + "'" +
-                ", ipPerson='" + getIpPerson() + "'" +
-                "}";
+        return "Pedido [id=" + id + ", primeiroNome=" + primeiroNome + ", ultimoNome=" + ultimoNome + ", cpf=" + cpf
+                + ", cep=" + cep + ", numeroCasa=" + numeroCasa + ", telefone=" + telefone + ", dataCriacao="
+                + dataCriacao + ", ValorTotal=" + ValorTotal + ", ipPerson=" + ipPerson + ", metodoPagamento="
+                + metodoPagamento + "]";
     }
 
 }

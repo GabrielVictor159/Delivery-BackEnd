@@ -1,5 +1,6 @@
 package com.Delivery.delivery.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import jakarta.persistence.Column;
@@ -14,7 +15,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "pedido_produto")
-public class PedidoProduto {
+public class PedidoProduto implements Serializable {
+    private static final long serialVersionUID = 1l;
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

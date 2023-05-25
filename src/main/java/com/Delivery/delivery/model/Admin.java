@@ -1,5 +1,6 @@
 package com.Delivery.delivery.model;
 
+import java.io.Serializable;
 import java.util.UUID;
 
 import com.Delivery.delivery.functions.MD5Encoder;
@@ -16,7 +17,8 @@ import jakarta.persistence.Table;
 
 @Entity
 @Table(name = "admin")
-public class Admin {
+public class Admin implements Serializable {
+    private static final long serialVersionUID = 1l;
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     @Column

@@ -18,10 +18,10 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.Delivery.delivery.dto.ProdutoDTO;
+import com.Delivery.delivery.dto.genericDTOs.PaginacaoProdutoDTO;
 import com.Delivery.delivery.model.Admin;
 import com.Delivery.delivery.model.Categoria;
 import com.Delivery.delivery.model.Produto;
@@ -29,6 +29,8 @@ import com.Delivery.delivery.service.AdminService;
 import com.Delivery.delivery.service.CategoriaService;
 import com.Delivery.delivery.service.ImageService;
 import com.Delivery.delivery.service.ProdutoService;
+
+import jakarta.validation.Valid;
 
 @RestController
 @RequestMapping(value = "/Produtos", produces = { MediaType.APPLICATION_JSON_VALUE })
@@ -43,26 +45,22 @@ public class ProdutoController {
     @Autowired
     ImageService imageService;
 
-    @GetMapping()
-    public ResponseEntity<Object> buscarProdutosPaginados(@RequestParam(required = false) String nome,
-            @RequestParam(required = false) String categoria,
-            @RequestParam(defaultValue = "0") int pagina,
-            @RequestParam(defaultValue = "10") int tamanhoPagina) {
-        if (categoria != null) {
-            Optional<Categoria> categoriaBusca = categoriaService.buscarPorNome(categoria);
-            if (categoriaBusca.isEmpty()) {
-                return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
-            } else {
-                Page<Produto> produtos = produtoService.buscarProdutosPaginadosPorCategoria(categoriaBusca.get(),
-                        pagina, tamanhoPagina);
-                return new ResponseEntity<>(produtos, HttpStatus.OK);
-            }
-        } else if (nome != null) {
-            Page<Produto> produtos = produtoService.buscarProdutosPaginadosPorNome(nome, pagina, tamanhoPagina);
+    @PostMapping("/getAll")
+    public ResponseEntity<Object> buscarProdutosPaginados(@RequestBody @Valid PaginacaoProdutoDTO paginacaoDTO) {
+        try {
+            String nome = paginacaoDTO.getNome().orElse(null);
+            String categoria = paginacaoDTO.getCategoria().orElse(null);
+            double precoMinimo = paginacaoDTO.getPrecoMinimo();
+            double precoMaximo = paginacaoDTO.getPrecoMaximo();
+            String descricao = paginacaoDTO.getDescricao().orElse(null);
+            int pagina = paginacaoDTO.getPagina();
+            int tamanhoPagina = paginacaoDTO.getTamanhoPagina();
+            Page<Produto> produtos = produtoService.buscarProdutosPaginados(nome, categoria, precoMinimo, precoMaximo,
+                    descricao, pagina - 1, tamanhoPagina);
             return new ResponseEntity<>(produtos, HttpStatus.OK);
-        } else {
-            Page<Produto> produtos = produtoService.buscarProdutosPaginados(pagina, tamanhoPagina);
-            return new ResponseEntity<>(produtos, HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>("Houve um erro", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -84,12 +82,18 @@ public class ProdutoController {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
             try {
-                Produto produto = new Produto();
-                BeanUtils.copyProperties(dto, produto);
-                String[] imagens = adicionarImagens(dto.getImagens());
-                produto.setImagens(Arrays.toString(imagens));
-                produtoService.salvar(produto);
-                return new ResponseEntity<>(produto, HttpStatus.OK);
+                Optional<Categoria> categoria = categoriaService.buscarPorId(dto.getIdCategoria());
+                if (categoria.isPresent()) {
+                    Produto produto = new Produto();
+                    produto.setCategoria(categoria.get());
+                    BeanUtils.copyProperties(dto, produto);
+                    String[] imagens = adicionarImagens(dto.getImagens());
+                    produto.setImagens(Arrays.toString(imagens));
+                    produtoService.salvar(produto);
+                    return new ResponseEntity<>(produto, HttpStatus.OK);
+                } else {
+                    return new ResponseEntity<>("O id da categoria não foi encontrado", HttpStatus.BAD_REQUEST);
+                }
             } catch (Exception e) {
                 System.out.println(e.getMessage());
                 return new ResponseEntity<>("Houve um erro", HttpStatus.INTERNAL_SERVER_ERROR);
@@ -106,16 +110,22 @@ public class ProdutoController {
         } else {
             try {
                 Optional<Produto> produtoOptional = produtoService.buscarPorId(id);
+                Optional<Categoria> categoria = categoriaService.buscarPorId(dto.getIdCategoria());
                 if (produtoOptional.isPresent()) {
-                    Produto produto = produtoOptional.get();
-                    excluirImagens(produto.getImagens());
-                    String[] imagens = adicionarImagens(dto.getImagens());
-                    produto.setImagens(Arrays.toString(imagens));
-                    BeanUtils.copyProperties(dto, produto);
-                    produtoService.salvar(produto);
-                    return new ResponseEntity<>(produto, HttpStatus.OK);
+                    if (categoria.isPresent()) {
+                        Produto produto = produtoOptional.get();
+                        produto.setCategoria(categoria.get());
+                        excluirImagens(produto.getImagens());
+                        String[] imagens = adicionarImagens(dto.getImagens());
+                        produto.setImagens(Arrays.toString(imagens));
+                        BeanUtils.copyProperties(dto, produto);
+                        produtoService.salvar(produto);
+                        return new ResponseEntity<>(produto, HttpStatus.OK);
+                    } else {
+                        return new ResponseEntity<>("O id da categoria não foi encontrado", HttpStatus.BAD_REQUEST);
+                    }
                 } else {
-                    return new ResponseEntity<>(HttpStatus.BAD_REQUEST);
+                    return new ResponseEntity<>("O produto original não existe", HttpStatus.BAD_REQUEST);
                 }
             } catch (Exception e) {
                 System.out.println(e.getMessage());

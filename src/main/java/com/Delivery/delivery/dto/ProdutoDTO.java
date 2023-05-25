@@ -3,25 +3,23 @@ package com.Delivery.delivery.dto;
 import java.util.Arrays;
 import java.util.UUID;
 
-import com.Delivery.delivery.model.Categoria;
-
 public class ProdutoDTO {
 
     private String nome;
     private String descricao;
     private double preco;
     private byte[][] imagens;
-    private Categoria categoria;
+    private UUID idCategoria;
 
     public ProdutoDTO() {
     }
 
-    public ProdutoDTO(String nome, String descricao, double preco, byte[][] imagens, Categoria categoria) {
+    public ProdutoDTO(String nome, String descricao, double preco, byte[][] imagens, UUID idCategoria) {
         this.nome = nome;
         this.descricao = descricao;
         this.preco = preco;
         this.imagens = imagens;
-        this.categoria = categoria;
+        this.idCategoria = idCategoria;
     }
 
     public String getNome() {
@@ -56,18 +54,18 @@ public class ProdutoDTO {
         this.imagens = imagens;
     }
 
-    public Categoria getCategoria() {
-        return categoria;
+    public UUID getIdCategoria() {
+        return idCategoria;
     }
 
-    public void setCategoria(Categoria categoria) {
-        this.categoria = categoria;
+    public void setIdCategoria(UUID idCategoria) {
+        this.idCategoria = idCategoria;
     }
 
     @Override
     public String toString() {
         return "ProdutoDTO [nome=" + nome + ", descricao=" + descricao + ", preco=" + preco + ", imagens="
-                + Arrays.toString(imagens) + ", categoria=" + categoria + "]";
+                + Arrays.toString(imagens) + ", idCategoria=" + idCategoria + "]";
     }
 
 }

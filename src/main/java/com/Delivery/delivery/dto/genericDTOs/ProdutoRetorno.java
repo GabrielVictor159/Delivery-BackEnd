@@ -1,28 +1,30 @@
 package com.Delivery.delivery.dto.genericDTOs;
 
+import java.util.UUID;
+
 public class ProdutoRetorno {
+    private UUID id;
     private int Quantidade;
 
+    public UUID getId() {
+        return id;
+    }
+
+    public void setId(UUID id) {
+        this.id = id;
+    }
+
     public int getQuantidade() {
-        return this.Quantidade;
+        return Quantidade;
     }
 
     public void setQuantidade(int quantidade) {
-        this.Quantidade = quantidade;
-    }
-
-    public ProdutoRetorno() {
-    }
-
-    public ProdutoRetorno(int Quantidade) {
-        this.Quantidade = Quantidade;
+        Quantidade = quantidade;
     }
 
     @Override
     public String toString() {
-        return "{" +
-                " Quantidade='" + getQuantidade() + "'" +
-                "}";
+        return "ProdutoRetorno [id=" + id + ", Quantidade=" + Quantidade + "]";
     }
 
 }

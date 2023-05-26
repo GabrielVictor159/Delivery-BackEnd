@@ -13,6 +13,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Delivery.delivery.config.SystemConfig;
+import com.Delivery.delivery.functions.DecodeURLComponent;
 import com.Delivery.delivery.model.Admin;
 import com.Delivery.delivery.service.AdminService;
 
@@ -26,7 +28,9 @@ public class AdminController {
 
     @GetMapping("/{nome}/{senha}")
     public ResponseEntity<Object> getAdmin(@PathVariable String nome, @PathVariable String senha) {
-        Optional<Admin> admin = adminService.login(nome, senha);
+        Optional<Admin> admin = adminService.login(
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(nome) : senha,
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(nome) : senha);
         if (admin.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {

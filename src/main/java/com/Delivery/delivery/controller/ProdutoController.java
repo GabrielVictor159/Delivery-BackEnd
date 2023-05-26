@@ -20,8 +20,10 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Delivery.delivery.config.SystemConfig;
 import com.Delivery.delivery.dto.ProdutoDTO;
 import com.Delivery.delivery.dto.genericDTOs.PaginacaoProdutoDTO;
+import com.Delivery.delivery.functions.DecodeURLComponent;
 import com.Delivery.delivery.model.Admin;
 import com.Delivery.delivery.model.Categoria;
 import com.Delivery.delivery.model.Produto;
@@ -77,7 +79,9 @@ public class ProdutoController {
     @PostMapping("/{nomeAdmin}/{senhaAdmin}")
     public ResponseEntity<Object> adicionar(@PathVariable String nomeAdmin, @PathVariable String senhaAdmin,
             @RequestBody ProdutoDTO dto) {
-        Optional<Admin> admin = adminService.login(nomeAdmin, senhaAdmin);
+        Optional<Admin> admin = adminService.login(
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(nomeAdmin) : nomeAdmin,
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(senhaAdmin) : senhaAdmin);
         if (admin.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
@@ -104,7 +108,9 @@ public class ProdutoController {
     @PutMapping("/{id}/{nomeAdmin}/{senhaAdmin}")
     public ResponseEntity<Object> atualizar(@PathVariable UUID id, @PathVariable String nomeAdmin,
             @PathVariable String senhaAdmin, @RequestBody ProdutoDTO dto) {
-        Optional<Admin> admin = adminService.login(nomeAdmin, senhaAdmin);
+        Optional<Admin> admin = adminService.login(
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(nomeAdmin) : nomeAdmin,
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(senhaAdmin) : senhaAdmin);
         if (admin.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
@@ -137,7 +143,9 @@ public class ProdutoController {
     @DeleteMapping("/{id}/{nomeAdmin}/{senhaAdmin}")
     public ResponseEntity<Object> Deletar(@PathVariable UUID id, @PathVariable String nomeAdmin,
             @PathVariable String senhaAdmin) {
-        Optional<Admin> admin = adminService.login(nomeAdmin, senhaAdmin);
+        Optional<Admin> admin = adminService.login(
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(nomeAdmin) : nomeAdmin,
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(senhaAdmin) : senhaAdmin);
         if (admin.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {

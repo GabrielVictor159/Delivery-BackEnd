@@ -21,7 +21,7 @@ public class IpPerson implements Serializable {
     @Column
     private UUID id;
 
-    @Column(name = "ipCode", length = 40, nullable = true)
+    @Column(name = "ipCode", length = 40, nullable = true, unique = true)
     private String ipCode;
 
     @Column(name = "country", length = 60, nullable = true)
@@ -54,7 +54,11 @@ public class IpPerson implements Serializable {
     @Column(name = "assinature", length = 244, nullable = true)
     private String assinature;
 
+    @Column(name = "banned")
+    private Boolean banned;
+
     public IpPerson() {
+        this.banned = false;
     }
 
     public IpPerson(String ipCode, String country, String region, String city, String zip, BigDecimal lat,
@@ -71,6 +75,7 @@ public class IpPerson implements Serializable {
         this.isp = isp;
         this.org = org;
         this.assinature = assinature;
+        this.banned = false;
     }
 
     public UUID getId() {
@@ -169,22 +174,19 @@ public class IpPerson implements Serializable {
         this.assinature = assinature;
     }
 
+    public Boolean getBanned() {
+        return banned;
+    }
+
+    public void setBanned(Boolean banned) {
+        this.banned = banned;
+    }
+
     @Override
     public String toString() {
-        return "{" +
-                " id='" + getId() + "'" +
-                ", ipCode='" + getIpCode() + "'" +
-                ", country='" + getCountry() + "'" +
-                ", region='" + getRegion() + "'" +
-                ", city='" + getCity() + "'" +
-                ", zip='" + getZip() + "'" +
-                ", lat='" + getLat() + "'" +
-                ", lon='" + getLon() + "'" +
-                ", timezone='" + getTimezone() + "'" +
-                ", isp='" + getIsp() + "'" +
-                ", org='" + getOrg() + "'" +
-                ", assinature='" + getAssinature() + "'" +
-                "}";
+        return "IpPerson [id=" + id + ", ipCode=" + ipCode + ", country=" + country + ", region=" + region + ", city="
+                + city + ", zip=" + zip + ", lat=" + lat + ", lon=" + lon + ", timezone=" + timezone + ", isp=" + isp
+                + ", org=" + org + ", assinature=" + assinature + ", banned=" + banned + "]";
     }
 
 }

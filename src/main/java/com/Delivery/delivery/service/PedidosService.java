@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import com.Delivery.delivery.model.Pedido;
 import com.Delivery.delivery.repository.PedidoProdutoRepository;
 import com.Delivery.delivery.repository.PedidosRepository;
-
+import org.springframework.data.domain.Sort;
 import jakarta.transaction.Transactional;
 
 @Service
@@ -38,7 +38,8 @@ public class PedidosService {
     }
 
     public Page<Pedido> buscarPedidosPaginados(int pagina, int tamanhoPagina) {
-        Pageable pageable = PageRequest.of(pagina, tamanhoPagina);
+        Sort sort = Sort.by(Sort.Direction.DESC, "id");
+        Pageable pageable = PageRequest.of(pagina, tamanhoPagina, sort);
         return pedidosRepository.findAll(pageable);
     }
 
@@ -46,15 +47,14 @@ public class PedidosService {
         return pedidosRepository.findById(id);
     }
 
+    @Transactional
     public void deletar(UUID id) {
         Optional<Pedido> pedido = pedidosRepository.findById(id);
 
         if (pedido.isPresent()) {
-            UUID idIp = pedido.get().getIpPerson().getId();
             try {
                 pedidoProdutoRepository.deleteAllByPedido(pedido.get());
                 pedidosRepository.deleteById(id);
-                ipPersonService.deletar(idIp);
             } catch (Exception e) {
 
             }
@@ -62,6 +62,7 @@ public class PedidosService {
 
     }
 
+    @Transactional
     public void deletarPedidoByTimePerDay() {
         Date dataAtual = new Date();
         List<Pedido> todosOsPedidos = pedidosRepository.findAll();

@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.Delivery.delivery.config.SystemConfig;
 import com.Delivery.delivery.dto.CategoriaDTO;
+import com.Delivery.delivery.functions.DecodeURLComponent;
 import com.Delivery.delivery.model.Admin;
 import com.Delivery.delivery.model.Categoria;
 import com.Delivery.delivery.service.AdminService;
@@ -58,7 +60,9 @@ public class CategoriaController {
     @PostMapping("/{nomeAdmin}/{senhaAdmin}")
     public ResponseEntity<Object> adicionar(@PathVariable String nomeAdmin, @PathVariable String senhaAdmin,
             @RequestBody CategoriaDTO dto) {
-        Optional<Admin> admin = adminService.login(nomeAdmin, senhaAdmin);
+        Optional<Admin> admin = adminService.login(
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(nomeAdmin) : nomeAdmin,
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(senhaAdmin) : senhaAdmin);
         if (admin.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
@@ -80,7 +84,9 @@ public class CategoriaController {
     @PutMapping("/{id}/{nomeAdmin}/{senhaAdmin}")
     public ResponseEntity<Object> atualizar(@PathVariable UUID id, @PathVariable String nomeAdmin,
             @PathVariable String senhaAdmin, @RequestBody CategoriaDTO dto) {
-        Optional<Admin> admin = adminService.login(nomeAdmin, senhaAdmin);
+        Optional<Admin> admin = adminService.login(
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(nomeAdmin) : nomeAdmin,
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(senhaAdmin) : senhaAdmin);
         if (admin.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {
@@ -107,7 +113,9 @@ public class CategoriaController {
     @DeleteMapping("/{id}/{nomeAdmin}/{senhaAdmin}")
     public ResponseEntity<Object> deletar(@PathVariable UUID id, @PathVariable String nomeAdmin,
             @PathVariable String senhaAdmin) {
-        Optional<Admin> admin = adminService.login(nomeAdmin, senhaAdmin);
+        Optional<Admin> admin = adminService.login(
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(nomeAdmin) : nomeAdmin,
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(senhaAdmin) : senhaAdmin);
         if (admin.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {

@@ -31,33 +31,15 @@ public class ProdutoService {
         return produtoRepository.findAll();
     }
 
-    public Page<Produto> buscarProdutosPaginados(String nome, String categoria, double precoMinimo, double precoMaximo,
+    public Page<Produto> buscarProdutosPaginados(String nome, String categoria, double precoMinimo,
+            double precoMaximo,
             String descricao, int pagina, int tamanhoPagina) {
         Pageable pageable = PageRequest.of(pagina, tamanhoPagina);
         System.out.println(pageable);
-        if (categoria != null && nome != null) {
-            return produtoRepository
-                    .findAllByNomeContainingIgnoreCaseAndCategoria_NomeAndPrecoBetweenAndDescricaoContainingIgnoreCase(
-                            nome, categoria, precoMinimo == -1 ? 0 : precoMinimo,
-                            precoMaximo == -1 ? Double.MAX_VALUE : precoMaximo, descricao, pageable);
-        } else if (categoria != null) {
-            return produtoRepository.findAllByCategoria_NomeAndPrecoBetweenAndDescricaoContainingIgnoreCase(
-                    categoria, precoMinimo == -1 ? 0 : precoMinimo, precoMaximo == -1 ? Double.MAX_VALUE : precoMaximo,
-                    descricao, pageable);
-        } else if (nome != null) {
-            return produtoRepository.findAllByNomeContainingIgnoreCaseAndPrecoBetweenAndDescricaoContainingIgnoreCase(
-                    nome, precoMinimo == -1 ? 0 : precoMinimo, precoMaximo == -1 ? Double.MAX_VALUE : precoMaximo,
-                    descricao, pageable);
-        } else if (descricao != null) {
-            return produtoRepository.findAllByPrecoBetweenAndDescricaoContainingIgnoreCase(
-                    precoMinimo == -1 ? 0 : precoMinimo, precoMaximo == -1 ? Double.MAX_VALUE : precoMaximo, descricao,
-                    pageable);
-        } else if (precoMinimo != -1 && precoMaximo != -1) {
-            return produtoRepository.findAllByPrecoBetween(
-                    precoMinimo, precoMaximo, pageable);
-        } else {
-            return produtoRepository.findAll(pageable);
-        }
+        return produtoRepository
+                .findAllByCategoriaNomeContainingIgnoreCaseAndPrecoBetweenAndNomeContainingIgnoreCaseAndDescricaoContainingIgnoreCase(
+                        categoria, precoMinimo == -1 ? 0 : precoMinimo,
+                        precoMaximo == -1 ? Double.MAX_VALUE : precoMaximo, nome, descricao, pageable);
     }
 
     public List<Produto> buscarProdutosPorIds(List<UUID> ids) {

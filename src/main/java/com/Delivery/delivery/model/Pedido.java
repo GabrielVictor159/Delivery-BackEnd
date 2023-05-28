@@ -59,12 +59,16 @@ public class Pedido implements Serializable {
     @Column(nullable = false)
     private String metodoPagamento;
 
+    @Column(columnDefinition = "TEXT")
+    private String observacoes;
+
     public Pedido() {
         this.dataCriacao = new Date();
     }
 
     public Pedido(UUID id, String primeiroNome, String ultimoNome, String cpf, String cep, Integer numeroCasa,
-            String telefone, Double valorTotal, IpPerson ipPerson, String metodoPayment) {
+            String telefone, Double valorTotal, IpPerson ipPerson, String metodoPagamento,
+            String observacoes) {
         this.id = id;
         this.primeiroNome = primeiroNome;
         this.ultimoNome = ultimoNome;
@@ -75,7 +79,8 @@ public class Pedido implements Serializable {
         this.dataCriacao = new Date();
         ValorTotal = valorTotal;
         this.ipPerson = ipPerson;
-        this.metodoPagamento = metodoPayment;
+        this.metodoPagamento = metodoPagamento;
+        this.observacoes = observacoes;
     }
 
     public static long getSerialversionuid() {
@@ -170,12 +175,20 @@ public class Pedido implements Serializable {
         this.metodoPagamento = metodoPagamento;
     }
 
+    public String getObservacoes() {
+        return observacoes;
+    }
+
+    public void setObservacoes(String observacoes) {
+        this.observacoes = observacoes;
+    }
+
     @Override
     public String toString() {
         return "Pedido [id=" + id + ", primeiroNome=" + primeiroNome + ", ultimoNome=" + ultimoNome + ", cpf=" + cpf
                 + ", cep=" + cep + ", numeroCasa=" + numeroCasa + ", telefone=" + telefone + ", dataCriacao="
                 + dataCriacao + ", ValorTotal=" + ValorTotal + ", ipPerson=" + ipPerson + ", metodoPagamento="
-                + metodoPagamento + "]";
+                + metodoPagamento + ", observacoes=" + observacoes + "]";
     }
 
 }

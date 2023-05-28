@@ -50,14 +50,15 @@ public class ProdutoController {
     @PostMapping("/getAll")
     public ResponseEntity<Object> buscarProdutosPaginados(@RequestBody @Valid PaginacaoProdutoDTO paginacaoDTO) {
         try {
-            String nome = paginacaoDTO.getNome().orElse(null);
-            String categoria = paginacaoDTO.getCategoria().orElse(null);
+            String categoria = paginacaoDTO.getCategoria().orElse("");
+            String nome = paginacaoDTO.getNome().orElse("");
             double precoMinimo = paginacaoDTO.getPrecoMinimo();
             double precoMaximo = paginacaoDTO.getPrecoMaximo();
-            String descricao = paginacaoDTO.getDescricao().orElse(null);
+            String descricao = paginacaoDTO.getDescricao().orElse("");
             int pagina = paginacaoDTO.getPagina();
             int tamanhoPagina = paginacaoDTO.getTamanhoPagina();
-            Page<Produto> produtos = produtoService.buscarProdutosPaginados(nome, categoria, precoMinimo, precoMaximo,
+            Page<Produto> produtos = produtoService.buscarProdutosPaginados(nome,
+                    categoria, precoMinimo, precoMaximo,
                     descricao, pagina - 1, tamanhoPagina);
             return new ResponseEntity<>(produtos, HttpStatus.OK);
         } catch (Exception e) {

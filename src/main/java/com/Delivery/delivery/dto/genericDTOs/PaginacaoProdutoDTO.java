@@ -1,6 +1,9 @@
 package com.Delivery.delivery.dto.genericDTOs;
 
 import java.util.Optional;
+import java.util.UUID;
+
+import com.Delivery.delivery.model.Categoria;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

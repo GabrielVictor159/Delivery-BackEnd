@@ -24,6 +24,8 @@ public class PedidoDTO {
     @NotNull
     private PaymentMethods metodoPagamento;
 
+    private String observacoes;
+
     private List<listProducts> produtos;
 
     public PedidoDTO() {
@@ -31,7 +33,7 @@ public class PedidoDTO {
 
     public PedidoDTO(@NotBlank String primeiroNome, @NotBlank String ultimoNome, @NotBlank String cpf,
             @NotNull String cep, @NotNull int numeroCasa, @NotBlank String telefone,
-            @NotBlank PaymentMethods metodoPagamento, List<listProducts> produtos) {
+            @NotNull PaymentMethods metodoPagamento, String observacoes, List<listProducts> produtos) {
         this.primeiroNome = primeiroNome;
         this.ultimoNome = ultimoNome;
         this.cpf = cpf;
@@ -39,6 +41,7 @@ public class PedidoDTO {
         this.numeroCasa = numeroCasa;
         this.telefone = telefone;
         this.metodoPagamento = metodoPagamento;
+        this.observacoes = observacoes;
         this.produtos = produtos;
     }
 
@@ -98,19 +101,20 @@ public class PedidoDTO {
         this.metodoPagamento = metodoPagamento;
     }
 
+    public String getObservacoes() {
+        return observacoes;
+    }
+
+    public void setObservacoes(String observacoes) {
+        this.observacoes = observacoes;
+    }
+
     public List<listProducts> getProdutos() {
         return produtos;
     }
 
     public void setProdutos(List<listProducts> produtos) {
         this.produtos = produtos;
-    }
-
-    @Override
-    public String toString() {
-        return "PedidoDTO [primeiroNome=" + primeiroNome + ", ultimoNome=" + ultimoNome + ", cpf=" + cpf + ", cep="
-                + cep + ", numeroCasa=" + numeroCasa + ", telefone=" + telefone + ", metodoPagamento=" + metodoPagamento
-                + ", produtos=" + produtos + "]";
     }
 
 }

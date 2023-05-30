@@ -1,6 +1,7 @@
 package com.Delivery.delivery.model;
 
 import java.io.Serializable;
+import java.util.Date;
 import java.util.UUID;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
@@ -43,7 +44,10 @@ public class Produto implements Serializable {
     @JoinColumn(name = "categoria_id", nullable = false)
     private Categoria categoria;
 
+    private Date dataPersistencia;
+
     public Produto() {
+        this.dataPersistencia = new Date();
     }
 
     public Produto(UUID id, String nome, String descricao, double preco, String imagens, Categoria categoria) {
@@ -53,6 +57,7 @@ public class Produto implements Serializable {
         this.preco = preco;
         this.imagens = imagens;
         this.categoria = categoria;
+        this.dataPersistencia = new Date();
     }
 
     public UUID getId() {
@@ -103,10 +108,22 @@ public class Produto implements Serializable {
         this.categoria = categoria;
     }
 
+    public static long getSerialversionuid() {
+        return serialVersionUID;
+    }
+
+    public Date getDataPersistencia() {
+        return dataPersistencia;
+    }
+
+    public void setDataPersistencia(Date dataPersistencia) {
+        this.dataPersistencia = dataPersistencia;
+    }
+
     @Override
     public String toString() {
         return "Produto [id=" + id + ", nome=" + nome + ", descricao=" + descricao + ", preco=" + preco + ", imagens="
-                + imagens + ", categoria=" + categoria + "]";
+                + imagens + ", categoria=" + categoria + ", dataPersistencia=" + dataPersistencia + "]";
     }
 
 }

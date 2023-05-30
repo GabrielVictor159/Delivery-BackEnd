@@ -17,7 +17,7 @@ public class ImageService {
         if (!directory.exists()) {
             directory.mkdirs();
         }
-        String fileName = UUID.randomUUID().toString() + ".jpg"; // Gera um nome aleatório para a imagem
+        String fileName = UUID.randomUUID().toString() + ".jpeg"; // Gera um nome aleatório para a imagem
         File file = new File(directory, fileName);
         FileUtils.writeByteArrayToFile(file, image);
 

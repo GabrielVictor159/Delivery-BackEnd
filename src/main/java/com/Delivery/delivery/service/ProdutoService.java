@@ -34,7 +34,8 @@ public class ProdutoService {
     public Page<Produto> buscarProdutosPaginados(String nome, String categoria, double precoMinimo,
             double precoMaximo,
             String descricao, int pagina, int tamanhoPagina) {
-        Pageable pageable = PageRequest.of(pagina, tamanhoPagina);
+        Sort sort = Sort.by(Sort.Direction.DESC, "dataPersistencia");
+        Pageable pageable = PageRequest.of(pagina, tamanhoPagina, sort);
         System.out.println(pageable);
         return produtoRepository
                 .findAllByCategoriaNomeContainingIgnoreCaseAndPrecoBetweenAndNomeContainingIgnoreCaseAndDescricaoContainingIgnoreCase(

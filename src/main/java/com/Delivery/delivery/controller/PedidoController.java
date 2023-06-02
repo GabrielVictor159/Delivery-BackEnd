@@ -198,6 +198,9 @@ public class PedidoController {
                             pedidoProdutoService.salvarTodos(listPedidoProduto);
                             PedidoRetorno retorno = new PedidoRetorno();
                             retorno.setProdutos(retorneProdutos(pedidoSalvo));
+                            retorno.setId(pedidoSalvo.getId());
+                            retorno.setMetodoPagamento(pedidoSalvo.getMetodoPagamento());
+                            retorno.setValorTotal(pedidoSalvo.getValorTotal());
                             return new ResponseEntity<>(retorno, HttpStatus.OK);
                         } catch (Exception e) {
                             System.out.println("\n \n \n Houve um erro: " + e + " \n \n \n");

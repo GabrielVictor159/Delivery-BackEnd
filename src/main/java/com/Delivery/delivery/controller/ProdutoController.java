@@ -1,6 +1,7 @@
 package com.Delivery.delivery.controller;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -76,6 +77,16 @@ public class ProdutoController {
             return new ResponseEntity<>(produto.get(), HttpStatus.OK);
         }
     }
+
+    @PostMapping("getByIds")
+    public ResponseEntity<Object> getByIds(@RequestBody List<UUID> ids) {
+        try {
+            return new ResponseEntity<>(produtoService.buscarProdutosPorIds(ids), HttpStatus.OK);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return new ResponseEntity<>("Houve um erro", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    };
 
     @PostMapping("/{nomeAdmin}/{senhaAdmin}")
     public ResponseEntity<Object> adicionar(@PathVariable String nomeAdmin, @PathVariable String senhaAdmin,

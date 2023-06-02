@@ -1,8 +1,7 @@
 package com.Delivery.delivery.model.Enums;
 
 public enum PaymentMethods {
-    CARTAOCREDITO,
+    CARTAO,
     PIX,
-    CARTAODEBITO,
     DINHEIRO
 }

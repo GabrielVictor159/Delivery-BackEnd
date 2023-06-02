@@ -2,17 +2,10 @@ package com.Delivery.delivery.dto.genericDTOs;
 
 import java.util.UUID;
 
-public class ProdutoRetorno {
-    private UUID id;
+import com.Delivery.delivery.model.Produto;
+
+public class ProdutoRetorno extends Produto {
     private int Quantidade;
-
-    public UUID getId() {
-        return id;
-    }
-
-    public void setId(UUID id) {
-        this.id = id;
-    }
 
     public int getQuantidade() {
         return Quantidade;
@@ -24,7 +17,11 @@ public class ProdutoRetorno {
 
     @Override
     public String toString() {
-        return "ProdutoRetorno [id=" + id + ", Quantidade=" + Quantidade + "]";
+        return "ProdutoRetorno [Quantidade=" + Quantidade + "]";
+    }
+
+    public ProdutoRetorno() {
+
     }
 
 }

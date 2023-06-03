@@ -110,7 +110,7 @@ public class PedidoController {
             return new ResponseEntity<>(HttpStatus.NOT_FOUND);
         }
         PedidoRetorno retorno = new PedidoRetorno();
-
+        BeanUtils.copyProperties(pedido.get(), retorno);
         retorno.setProdutos(retorneProdutos(pedido.get()));
         return new ResponseEntity<Object>(retorno, HttpStatus.OK);
     }

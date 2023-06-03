@@ -29,8 +29,8 @@ public class AdminController {
     @GetMapping("/{nome}/{senha}")
     public ResponseEntity<Object> getAdmin(@PathVariable String nome, @PathVariable String senha) {
         Optional<Admin> admin = adminService.login(
-                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(nome) : senha,
-                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(nome) : senha);
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(nome) : nome,
+                SystemConfig.AdminURLEncoder ? DecodeURLComponent.decodeURLComponent(senha) : senha);
         if (admin.isEmpty()) {
             return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         } else {

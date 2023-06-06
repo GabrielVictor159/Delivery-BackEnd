@@ -69,7 +69,7 @@ public class PedidoController {
     ProdutoService produtoService;
 
     @GetMapping("/{nomeAdmin}/{senhaAdmin}")
-    public ResponseEntity<Object> buscarPedidosPaginados(
+    public ResponseEntity<Page<?>> buscarPedidosPaginados(
             @PathVariable String nomeAdmin,
             @PathVariable String senhaAdmin,
             @RequestParam(defaultValue = "0") int pagina,
@@ -82,23 +82,21 @@ public class PedidoController {
         }
         Page<Pedido> pedidos = pedidosService.buscarPedidosPaginados(pagina, tamanhoPagina);
         if (admin.get().getTipo() == typeAdmins.DONO) {
-            List<PedidosRetornoDono> retorno = new ArrayList<>();
-            for (Pedido pedido : pedidos) {
+            Page<PedidosRetornoDono> retorno = pedidos.map(pedido -> {
                 PedidosRetornoDono produtoRetorno = new PedidosRetornoDono();
                 BeanUtils.copyProperties(pedido, produtoRetorno);
                 produtoRetorno.setProdutos(retorneProdutos(pedido));
-                retorno.add(produtoRetorno);
-            }
+                return produtoRetorno;
+            });
             return new ResponseEntity<>(retorno, HttpStatus.OK);
         } else {
-            List<PedidosRetornoFuncionario> retorno = new ArrayList<>();
-            for (Pedido pedido : pedidos) {
+            Page<PedidosRetornoFuncionario> retorno = pedidos.map(pedido -> {
                 PedidosRetornoFuncionario produtoRetorno = new PedidosRetornoFuncionario();
                 BeanUtils.copyProperties(pedido, produtoRetorno);
                 produtoRetorno.setProdutos(retorneProdutos(pedido));
                 produtoRetorno.setIp(pedido.getIpPerson().getIpCode());
-                retorno.add(produtoRetorno);
-            }
+                return produtoRetorno;
+            });
             return new ResponseEntity<>(retorno, HttpStatus.OK);
         }
     }

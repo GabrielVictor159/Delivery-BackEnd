@@ -14,6 +14,9 @@ import com.Delivery.delivery.model.Categoria;
 import com.Delivery.delivery.model.Produto;
 import com.Delivery.delivery.repository.PedidoProdutoRepository;
 import com.Delivery.delivery.repository.ProdutoRepository;
+
+import jakarta.transaction.Transactional;
+
 import org.springframework.data.domain.Sort;
 
 @Service
@@ -23,6 +26,7 @@ public class ProdutoService {
     @Autowired
     PedidoProdutoRepository pedidoProdutoRepository;
 
+    @Transactional
     public Produto salvar(Produto produto) {
         return produtoRepository.save(produto);
     }
@@ -51,6 +55,7 @@ public class ProdutoService {
         return produtoRepository.findById(id);
     }
 
+    @Transactional
     public void deletar(UUID id) {
         Optional<Produto> produto = produtoRepository.findById(id);
         if (produto.isPresent()) {
@@ -62,6 +67,7 @@ public class ProdutoService {
         }
     }
 
+    @Transactional
     public void deletarAllByCategoria(Categoria categoria) {
         List<Produto> listProduto = produtoRepository.findAllByCategoria(categoria);
         for (Produto produto : listProduto) {

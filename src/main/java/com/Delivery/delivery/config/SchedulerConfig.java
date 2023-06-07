@@ -15,7 +15,7 @@ public class SchedulerConfig implements SchedulingConfigurer {
     @Autowired
     PedidosService pedidosService;
 
-    @Scheduled(cron = "0 0 0 * * *")
+    @Scheduled(cron = "0 */10 * * * *")
     public void runEveryDay() {
         try {
             pedidosService.deletarPedidoByTimePerDay();
